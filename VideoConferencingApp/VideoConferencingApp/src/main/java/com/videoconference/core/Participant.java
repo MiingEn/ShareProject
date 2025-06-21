@@ -5,10 +5,20 @@ public class Participant {
     private final User user;
     private boolean audioMuted = false;
     private boolean videoMuted = false;
+    private long duration; // 以分钟为单位，或者你可以使用秒等
 
     public Participant(String participantId, User user) {
         this.participantId = participantId;
         this.user = user;
+        this.duration = 0; // 默认值为 0
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public void joinMeeting() {

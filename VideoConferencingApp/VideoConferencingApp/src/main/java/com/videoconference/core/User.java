@@ -2,17 +2,23 @@ package com.videoconference.core;
 
 public class User {
     private final String userId;
+    private final String name;      // 添加 name 字段
     private final String email;
     private final String password;
 
-    public User(String userId, String email, String password) {
+    public User(String userId, String name, String email, String password) {
         this.userId = userId;
+        this.name = name;
         this.email = email;
         this.password = password;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
@@ -23,13 +29,11 @@ public class User {
         return this.password.equals(inputPassword);
     }
 
-    // As per class diagram: register() stub
-    public static User register(String userId, String email, String password) {
+    public static User register(String userId, String name, String email, String password) {
         System.out.println("User registered: " + email);
-        return new User(userId, email, password);
+        return new User(userId, name, email, password);
     }
 
-    // As per class diagram: login() stub
     public boolean login() {
         System.out.println("User logged in: " + email);
         return true;

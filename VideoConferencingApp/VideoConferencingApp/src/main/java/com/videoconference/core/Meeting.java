@@ -3,6 +3,7 @@ package com.videoconference.core;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 public class Meeting {
     private final String meetingId;
@@ -17,60 +18,59 @@ public class Meeting {
         this.meetingPassword = meetingPassword;
         this.host = host;
         this.recording = recording;
-        // Use thread-safe collections for high concurrency
         this.participants = new CopyOnWriteArrayList<>();
         this.chats = new CopyOnWriteArrayList<>();
     }
 
-    public String getMeetingId() {
-        return meetingId;
-    }
-
-    public String getMeetingPassword() {
-        return meetingPassword;
-    }
-
-    public User getHost() {
-        return host;
-    }
-
-    public List<Participant> getParticipants() {
-        return participants;
-    }
-
-    public List<Chat> getChats() {
-        return chats;
-    }
-
-    public Recording getRecording() {
-        return recording;
-    }
-
-    // Thread-safe add/remove
     public void addParticipant(Participant participant) {
         participants.add(participant);
-    }
-
-    public void removeParticipant(Participant participant) {
-        participants.remove(participant);
     }
 
     public void sendMessage(Chat chat) {
         chats.add(chat);
     }
 
-    // Parallel stream example: get all participant emails
-    public List<String> getParticipantEmailsParallel() {
+    // g.1 Reduction
+    public long getTotalMeetingDuration() {
         return participants.parallelStream()
-                .map(p -> p.getUser().getEmail())
+                .mapToLong(Participant::getDuration)
+                .reduce(0L, Long::sum);
+    }
+
+    // g.2 Pipeline
+    public List<String> getSortedParticipantNames() {
+        return participants.parallelStream()
+                .map(p -> p.getUser().getName())
+                .filter(name -> name != null && !name.isEmpty())
+                .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
     }
 
+    // g.3 Performance comparison
+    public void compareEmailExtractionPerformance() {
+        long start = System.nanoTime();
+        List<String> sequential = participants.stream()
+                .map(p -> p.getUser().getEmail())
+                .collect(Collectors.toList());
+        long sequentialTime = System.nanoTime() - start;
+
+        start = System.nanoTime();
+        List<String> parallel = participants.parallelStream()
+                .map(p -> p.getUser().getEmail())
+                .collect(Collectors.toList());
+        long parallelTime = System.nanoTime() - start;
+
+        System.out.println("Sequential time (ns): " + sequentialTime);
+        System.out.println("Parallel time (ns): " + parallelTime);
+    }
+
     public void start() {
+        recording.startRecording();
         System.out.println("Meeting " + meetingId + " started.");
     }
 
     public void end() {
+        recording.stopRecording();
         System.out.println("Meeting " + meetingId + " ended.");
     }
 }

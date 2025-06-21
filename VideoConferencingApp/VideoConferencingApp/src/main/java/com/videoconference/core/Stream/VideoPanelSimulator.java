@@ -6,15 +6,13 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-
 
 public class VideoPanelSimulator implements Runnable {
     private volatile boolean running = true;
     private volatile boolean micEnabled = true;
     private final String userEmail;
     private final ImageView videoView;
-    private final Label timeLabel;       // 显示时间
+    private final Label timeLabel;
 
     public VideoPanelSimulator(String userEmail, ImageView videoView, Label timeLabel)
     {

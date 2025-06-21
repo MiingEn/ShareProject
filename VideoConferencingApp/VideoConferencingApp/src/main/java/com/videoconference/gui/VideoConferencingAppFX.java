@@ -43,7 +43,6 @@ public class VideoConferencingAppFX extends Application {
                 while (true) {
                     if (!isMuted) {
                         int bytesRead = microphone.read(buffer, 0, buffer.length);
-                        // 你可以在这里添加音频传输逻辑
                     }
                 }
             } catch (LineUnavailableException e) {
@@ -68,7 +67,7 @@ public class VideoConferencingAppFX extends Application {
         Tab joinTab = new Tab("Join Meeting", createJoinMeetingTab());
         Tab chatTab = new Tab("Chat", createChatTab());
         Tab participantsTab = new Tab("Participants", createParticipantsTab());
-        Tab videoTab = createVideoTab(); // 👈 使用新的方法
+        Tab videoTab = createVideoTab();
 
         tabPane.getTabs().addAll(videoTab, joinTab, chatTab, participantsTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -153,7 +152,6 @@ public class VideoConferencingAppFX extends Application {
                     videoSimulator.setMicEnabled(false);
                 }
 
-                // 添加：发送 MIC_MUTED 指令
                 out.println("MIC_MUTED " + userEmail);
 
                 alert.setContentText("Your mic is already muted.");
@@ -164,7 +162,6 @@ public class VideoConferencingAppFX extends Application {
                     videoSimulator.setMicEnabled(true);
                 }
 
-                // 添加：发送 MIC_UNMUTED 指令
                 out.println("MIC_UNMUTED " + userEmail);
 
                 alert.setContentText("Your mic is open.");
@@ -201,7 +198,7 @@ public class VideoConferencingAppFX extends Application {
             }
             userEmail = email;
             connectToServerAndJoin();
-            startAudioCapture();  // ✅ 开始音频录制
+            startAudioCapture();
         });
 
         vbox.getChildren().addAll(emailField, joinBtn, joinStatusLabel);
